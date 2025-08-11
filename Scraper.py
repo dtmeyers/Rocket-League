@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import sys
 from logger import log
 from dotenv import dotenv_values
 from pymongo.mongo_client import MongoClient
@@ -25,14 +26,18 @@ def get_replays(playlist = 'ranked-doubles', **kwargs):
 
 	match response.status_code:
 		case code if code >= 200 and code < 300:
-			print('Success')
+			print('Successfully retrieved replay meta data')
 			data = json.loads(response.text)
 			print(len(data['list']))
-		case code if code >= 400 and code < 500:
-			print(f'Client side error: {response.status_code}')
+		case code if code >= 400 and code < 429:
+			print(f'Client side error during replay meta data retrieval: {response.status_code}')
 			log(message=response.text, error=True)
+		case code if code == 429:
+			print(f"Rate limit hit during replay meta data retrieval, exiting at {time.ctime()}")
+			log(message=f'Rate limit hit', error=True)
+			sys.exit()
 		case code if code >= 500:
-			print('Server side error getting replay meta data from BC')
+			print('Server side error during replay meta data retrieval')
 			log(message=response.text, error=True)
 
 	return data
@@ -44,12 +49,25 @@ def get_replay_data(replay_id):
 
 	replay_url = f"{bc_url}replays/{replay_id}"
 	response = requests.get(replay_url, headers=bc_headers)
-	print(response.status_code)
-	if response.status_code >= 500:
-		print('Error getting replay data from BC')
-		print(response)
-		exit()
-	data = json.loads(response.text)
+
+	data = {}
+
+	match response.status_code:
+		case code if code >= 200 and code < 300:
+			print(f'Successfully retrieved replay {replay_id} data')
+			data = json.loads(response.text)
+			print(len(data['list']))
+		case code if code >= 400 and code < 429:
+			print(f'Client side error during replay {replay_id} data retrieval: {response.status_code}')
+			log(message=response.text, error=True)
+		case code if code == 429:
+			print(f"Rate limit hit during replay {replay_id} data retrieval, exiting")
+			log(message=f'Rate limit hit', error=True)
+			sys.exit()
+		case code if code >= 500:
+			print(f'Server side error during replay {replay_id} data retrieval')
+			log(message=response.text, error=True)
+
 	return data
 
 # MongoDB
@@ -77,11 +95,12 @@ def insert_replays(data, playlist):
 	except Exception as e:
 		log(message=e, error=True)
 
-if __name__ == "__main__":
+def data_scraper():
+	# Season 18 is March 14 - June 18
 	playlist = 'ranked-standard'
-	years = ["2020"] #, "2021", "2022", "2023", "2024"]
-	months = ["02"] #, "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
-	days = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28"]
+	years = ["2025"]
+	months = ["06"] #, "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+	days = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"] #, "31"]
 	hours = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
 	for year in years:
 		for month in months:
@@ -91,4 +110,7 @@ if __name__ == "__main__":
 					if (replays):
 						insert_replays(replays, playlist)
 					time.sleep(1)
-	print("Success")
+	print(f"Successfully completed at {time.ctime()}")
+
+if __name__ == "__main__":
+	data_scraper()
