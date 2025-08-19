@@ -2,6 +2,9 @@ import requests
 import json
 import time
 import sys
+import os
+import asyncio
+from pprint import pprint
 from logger import log
 from dotenv import dotenv_values
 from pymongo.mongo_client import MongoClient
@@ -95,7 +98,7 @@ def insert_replays(data, playlist):
 	except Exception as e:
 		log(message=e, error=True)
 
-def data_scraper():
+def meta_data_scraper():
 	# Season 18 is March 14 - June 18
 	playlist = 'ranked-standard'
 	years = ["2025"]
@@ -112,5 +115,43 @@ def data_scraper():
 					time.sleep(1)
 	print(f"Successfully completed at {time.ctime()}")
 
+async def get_mongo_data(playlist):
+	db_uri = config["MongoDBURI"]
+	client = MongoClient(db_uri, server_api=ServerApi('1'))
+	db_name = playlist.replace('-', ' ').title().replace(' ', '')
+	database = client[db_name]
+	collection = database['ReplayMetaData']
+
+	cursor = collection.find({})
+	# data = await cursor.to_list()
+	return cursor
+
+def save_data_to_file(data, filename):
+	dir_path = config['DIR_PATH']
+
+	if not os.path.exists(f'{dir_path}/data'):
+		os.mkdir(f'{dir_path}/data')
+
+	file_path = f'{dir_path}/data/{filename}'
+	with open(file_path, 'w') as file:
+		json.dump(data, file, indent=4)
+
 if __name__ == "__main__":
-	data_scraper()
+	#meta_data_scraper()
+	data = asyncio.run(get_mongo_data('ranked-standard'))
+	all_data = []
+	counter = 0
+	for entry in data:
+		print(f"Link: {entry['link']}, Date: {entry['date']}")
+		entry.pop('_id') # This removes the MongoDB assigned object ID, which I don't use for anything but gives the json package trouble
+		all_data.append(entry)
+		counter += 1
+		if counter > 10:
+			break
+	pprint(all_data)
+	save_data_to_file(all_data, 'test')
+
+
+#{"min_rank": {"$exists": true}, "min_rank.name": {"$regex": "grand champion", "$options": "i"}}
+# This query will return all entries where the min_rank field exists and the name of the min_rank is "grand champion"
+# This is a query for the ranked-standard playlist
