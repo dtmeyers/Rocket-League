@@ -4,9 +4,11 @@ import time
 import sys
 import os
 import asyncio
+import bson
 from pprint import pprint
 from logger import log
 from dotenv import dotenv_values
+from datetime import datetime
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
@@ -57,14 +59,14 @@ def get_replay_data(replay_id):
 
 	match response.status_code:
 		case code if code >= 200 and code < 300:
-			print(f'Successfully retrieved replay {replay_id} data')
+			print(f'Successfully retrieved replay {replay_id} data at {datetime.now()}')
 			data = json.loads(response.text)
-			print(len(data['list']))
+			#print(len(data['list']))
 		case code if code >= 400 and code < 429:
 			print(f'Client side error during replay {replay_id} data retrieval: {response.status_code}')
 			log(message=response.text, error=True)
 		case code if code == 429:
-			print(f"Rate limit hit during replay {replay_id} data retrieval, exiting")
+			print(f"Rate limit hit during replay {replay_id} data retrieval at {datetime.now()}, exiting")
 			log(message=f'Rate limit hit', error=True)
 			sys.exit()
 		case code if code >= 500:
@@ -122,8 +124,7 @@ async def get_mongo_data(playlist):
 	database = client[db_name]
 	collection = database['ReplayMetaData']
 
-	cursor = collection.find({})
-	# data = await cursor.to_list()
+	cursor = collection.find({}).sort('date')
 	return cursor
 
 def save_data_to_file(data, filename):
@@ -136,20 +137,54 @@ def save_data_to_file(data, filename):
 	with open(file_path, 'w') as file:
 		json.dump(data, file, indent=4)
 
+# Returns last date saved or false if no data saved
+def last_date():
+	directory_path = f"{config['DIR_PATH']}/data/"
+	last_date = '2025-03-01T10:00:00-04:00'
+	for entry_name in os.listdir(directory_path):
+		if entry_name == 'test':
+			continue
+		full_path = os.path.join(directory_path, entry_name)
+		if os.path.isfile(full_path) and entry_name > last_date:
+			print(f"File: {entry_name}")
+			last_date = entry_name
+	if last_date == '2025-03-01T10:00:00-04:00':
+		return False
+	return last_date
+
 if __name__ == "__main__":
-	#meta_data_scraper()
-	data = asyncio.run(get_mongo_data('ranked-standard'))
+
+	#data = asyncio.run(get_mongo_data('ranked-standard'))
+	# moving the function logic here to use start session and refresh session
+	db_uri = config["MongoDBURI"]
+	client = MongoClient(db_uri, server_api=ServerApi('1'))
+	playlist = 'ranked-standard'
+	db_name = playlist.replace('-', ' ').title().replace(' ', '')
+	database = client[db_name]
+	collection = database['ReplayMetaData']
+
+	date = last_date()
+	where = {}
+	if date:
+		where = {"date": {"$gt": date}}
+
+	cursor = collection.find(where).sort('date')
+	data = list(cursor)
 	all_data = []
 	counter = 0
 	for entry in data:
-		print(f"Link: {entry['link']}, Date: {entry['date']}")
+		#print(f"Link: {entry['link']}, Date: {entry['date']}")
 		entry.pop('_id') # This removes the MongoDB assigned object ID, which I don't use for anything but gives the json package trouble
+		entry['match_details'] = get_replay_data(entry['id'])
 		all_data.append(entry)
 		counter += 1
-		if counter > 10:
-			break
-	pprint(all_data)
-	save_data_to_file(all_data, 'test')
+		time.sleep(3.6)
+		if counter % 1000 == 0:
+			save_data_to_file(all_data, f"{entry['date']}")
+			print(f"Successfully saved file {entry['date']}")
+			all_data = []
+	#pprint(all_data)
+	#save_data_to_file(all_data, 'test')
 
 
 #{"min_rank": {"$exists": true}, "min_rank.name": {"$regex": "grand champion", "$options": "i"}}
