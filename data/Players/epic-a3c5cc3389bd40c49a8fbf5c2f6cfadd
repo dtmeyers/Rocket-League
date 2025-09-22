@@ -1,0 +1,183 @@
+{
+    "a7f7e980-a29b-47ff-81b8-2d007fd32660": {
+        "start_time": 0,
+        "end_time": 370.7881,
+        "name": "Seizk",
+        "id": {
+            "platform": "epic",
+            "id": "a3c5cc3389bd40c49a8fbf5c2f6cfadd"
+        },
+        "car_id": 4284,
+        "car_name": "Fennec",
+        "camera": {
+            "fov": 110,
+            "height": 100,
+            "pitch": -3,
+            "distance": 270,
+            "stiffness": 0.35,
+            "swivel_speed": 10,
+            "transition_speed": 1.7
+        },
+        "steering_sensitivity": 1.8,
+        "stats": {
+            "core": {
+                "shots": 4,
+                "shots_against": 8,
+                "goals": 1,
+                "goals_against": 4,
+                "saves": 1,
+                "assists": 1,
+                "score": 377,
+                "mvp": false,
+                "shooting_percentage": 25
+            },
+            "boost": {
+                "bpm": 325,
+                "bcpm": 370.1439,
+                "avg_amount": 57.92,
+                "amount_collected": 2139,
+                "amount_stolen": 405,
+                "amount_collected_big": 1471,
+                "amount_stolen_big": 222,
+                "amount_collected_small": 668,
+                "amount_stolen_small": 183,
+                "count_collected_big": 19,
+                "count_stolen_big": 3,
+                "count_collected_small": 58,
+                "count_stolen_small": 16,
+                "amount_overfill": 453,
+                "amount_overfill_stolen": 86,
+                "amount_used_while_supersonic": 102,
+                "time_zero_boost": 10.51,
+                "percent_zero_boost": 3.0311768,
+                "time_full_boost": 41.41,
+                "percent_full_boost": 11.94301,
+                "time_boost_0_25": 59.65,
+                "time_boost_25_50": 74.12,
+                "time_boost_50_75": 91.03,
+                "time_boost_75_100": 112.42,
+                "percent_boost_0_25": 17.68875,
+                "percent_boost_25_50": 21.979717,
+                "percent_boost_50_75": 26.994247,
+                "percent_boost_75_100": 33.337288
+            },
+            "movement": {
+                "avg_speed": 1468,
+                "total_distance": 479971,
+                "time_supersonic_speed": 35.48,
+                "time_boost_speed": 131.52,
+                "time_slow_speed": 190.46,
+                "time_ground": 226.26,
+                "time_low_air": 116.95,
+                "time_high_air": 14.25,
+                "time_powerslide": 5.09,
+                "count_powerslide": 43,
+                "avg_powerslide_duration": 0.12,
+                "avg_speed_percentage": 63.826088,
+                "percent_slow_speed": 53.281483,
+                "percent_boost_speed": 36.792927,
+                "percent_supersonic_speed": 9.925586,
+                "percent_ground": 63.296593,
+                "percent_low_air": 32.71695,
+                "percent_high_air": 3.9864602
+            },
+            "positioning": {
+                "avg_distance_to_ball": 3040,
+                "avg_distance_to_ball_possession": 2968,
+                "avg_distance_to_ball_no_possession": 3107,
+                "avg_distance_to_mates": 3798,
+                "time_defensive_third": 150.59,
+                "time_neutral_third": 127.18,
+                "time_offensive_third": 79.69,
+                "time_defensive_half": 212.8,
+                "time_offensive_half": 144.66,
+                "time_behind_ball": 265.12,
+                "time_infront_ball": 92.35,
+                "time_most_back": 113,
+                "time_most_forward": 125,
+                "goals_against_while_last_defender": 1,
+                "time_closest_to_ball": 117.6,
+                "time_farthest_from_ball": 105.2,
+                "percent_defensive_third": 42.127792,
+                "percent_offensive_third": 22.293404,
+                "percent_neutral_third": 35.578808,
+                "percent_defensive_half": 59.53113,
+                "percent_offensive_half": 40.46886,
+                "percent_behind_ball": 74.165665,
+                "percent_infront_ball": 25.834335,
+                "percent_most_back": 32.5902,
+                "percent_most_forward": 36.051105,
+                "percent_closest_to_ball": 33.916878,
+                "percent_farthest_from_ball": 30.34061
+            },
+            "demo": {
+                "inflicted": 0,
+                "taken": 4
+            }
+        },
+        "team_stats": {
+            "ball": {
+                "possession_time": 137.28,
+                "time_in_side": 142.46
+            },
+            "core": {
+                "shots": 6,
+                "shots_against": 8,
+                "goals": 3,
+                "goals_against": 4,
+                "saves": 5,
+                "assists": 2,
+                "score": 1137,
+                "shooting_percentage": 50
+            },
+            "boost": {
+                "bpm": 1130,
+                "bcpm": 1189.3403,
+                "avg_amount": 159.82999,
+                "amount_collected": 6873,
+                "amount_stolen": 1041,
+                "amount_collected_big": 5119,
+                "amount_stolen_big": 564,
+                "amount_collected_small": 1754,
+                "amount_stolen_small": 477,
+                "count_collected_big": 62,
+                "count_stolen_big": 7,
+                "count_collected_small": 155,
+                "count_stolen_small": 41,
+                "amount_overfill": 1146,
+                "amount_overfill_stolen": 145,
+                "amount_used_while_supersonic": 484,
+                "time_zero_boost": 102.61,
+                "time_full_boost": 131.2,
+                "time_boost_0_25": 317.92,
+                "time_boost_25_50": 215.78,
+                "time_boost_50_75": 199.62001,
+                "time_boost_75_100": 306.07
+            },
+            "movement": {
+                "total_distance": 1567124,
+                "time_supersonic_speed": 149.38,
+                "time_boost_speed": 462.3,
+                "time_slow_speed": 482.96997,
+                "time_ground": 620.05,
+                "time_low_air": 415.19,
+                "time_high_air": 59.42,
+                "time_powerslide": 17.49,
+                "count_powerslide": 148
+            },
+            "positioning": {
+                "time_defensive_third": 481.55,
+                "time_neutral_third": 374.41,
+                "time_offensive_third": 238.69,
+                "time_defensive_half": 680.12,
+                "time_offensive_half": 414.54,
+                "time_behind_ball": 807.27,
+                "time_infront_ball": 287.39
+            },
+            "demo": {
+                "inflicted": 2,
+                "taken": 5
+            }
+        }
+    }
+}
